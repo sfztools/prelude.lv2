@@ -45,7 +45,9 @@ set_target_properties (${LV2PLUGIN_PRJ_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
 file (MAKE_DIRECTORY ${PROJECT_BINARY_DIR})
 configure_file (manifest.ttl.in ${PROJECT_BINARY_DIR}/manifest.ttl)
 configure_file (${PROJECT_NAME}.ttl.in ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.ttl)
+configure_file (modgui.ttl.in ${PROJECT_BINARY_DIR}/modgui.ttl)
 file(COPY instrument DESTINATION ${PROJECT_BINARY_DIR})
+file(COPY modgui DESTINATION ${PROJECT_BINARY_DIR})
 
 # Installation
 if (NOT MSVC)
