@@ -94,13 +94,13 @@ test_rank_sentinel(const rank_range_t* rank)
 #define TOCCATA_TROMPETTE8_CC 108
 
 static const rank_range_t crescendo_ranks[] = {
-    { .rank_cc = TOCCATA_BOURDON16_CC,  .rank_start = 0.1, .rank_end = 0.4 },
-    { .rank_cc = TOCCATA_FLUTE8_CC,     .rank_start = 0.0, .rank_end = 0.0 },
-    { .rank_cc = TOCCATA_MONTRE8_CC,    .rank_start = 0.2, .rank_end = 0.5 },
-    { .rank_cc = TOCCATA_FLUTE4_CC,     .rank_start = 0.3, .rank_end = 0.6 },
-    { .rank_cc = TOCCATA_PRESTANT4_CC,  .rank_start = 0.4, .rank_end = 0.7 },
-    { .rank_cc = TOCCATA_DOUBLETTE2_CC, .rank_start = 0.5, .rank_end = 0.8 },
-    { .rank_cc = TOCCATA_PLEINJEUX_CC,  .rank_start = 0.6, .rank_end = 0.9 },
+    { .rank_cc = TOCCATA_FLUTE8_CC,     .rank_start = 0.0,  .rank_end = 0.0  },
+    { .rank_cc = TOCCATA_BOURDON16_CC,  .rank_start = 0.05, .rank_end = 0.2  },
+    { .rank_cc = TOCCATA_MONTRE8_CC,    .rank_start = 0.2,  .rank_end = 0.35 },
+    { .rank_cc = TOCCATA_FLUTE4_CC,     .rank_start = 0.35, .rank_end = 0.5  },
+    { .rank_cc = TOCCATA_PRESTANT4_CC,  .rank_start = 0.5,  .rank_end = 0.65 },
+    { .rank_cc = TOCCATA_DOUBLETTE2_CC, .rank_start = 0.65, .rank_end = 0.8  },
+    { .rank_cc = TOCCATA_PLEINJEUX_CC,  .rank_start = 0.8,  .rank_end = 0.95 },
     RANK_SENTINEL
 };
 
