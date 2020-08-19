@@ -83,34 +83,34 @@ test_rank_sentinel(const rank_range_t* rank)
     );
 }
 
-#define TOCCATA_BOURDON16_CC 200
-#define TOCCATA_BOURDON8_CC 201
-#define TOCCATA_MONTRE8_CC 202
-#define TOCCATA_SALICIONAL8_CC 203
-#define TOCCATA_OCTAVE4_CC 204
-#define TOCCATA_FLUTE4_CC 205
-#define TOCCATA_DOUBLETTE2_CC 206
-#define TOCCATA_NAZARD_CC 207
-#define TOCCATA_TIERCE_CC 208
-#define TOCCATA_FOURNITURE_CC 209
-#define TOCCATA_CORNET_CC 210
-#define TOCCATA_TROMPETTE8_CC 211
+#define TOCCATA_BOURDON16_CC 100
+#define TOCCATA_FLUTE8_CC 101
+#define TOCCATA_MONTRE8_CC 102
+#define TOCCATA_FLUTE4_CC 103
+#define TOCCATA_PRESTANT4_CC 104
+#define TOCCATA_DOUBLETTE2_CC 105
+#define TOCCATA_PLEINJEUX_CC 106
+#define TOCCATA_SESQUIALTERA_CC 107
+#define TOCCATA_TROMPETTE8_CC 108
 
-static const rank_range_t flue_ranks[] = {
-    { .rank_cc = 200, .rank_start = 0.1, .rank_end = 0.4 },
-    { .rank_cc = 201, .rank_start = 0.0, .rank_end = 0.0 },
-    { .rank_cc = 202, .rank_start = 0.2, .rank_end = 0.5 },
-    { .rank_cc = 203, .rank_start = 0.3, .rank_end = 0.6 },
-    { .rank_cc = 204, .rank_start = 0.4, .rank_end = 0.7 },
-    { .rank_cc = 205, .rank_start = 0.5, .rank_end = 0.8 },
-    { .rank_cc = 206, .rank_start = 0.6, .rank_end = 0.9 },
-    { .rank_cc = 209, .rank_start = 0.7, .rank_end = 1.0 },
+static const rank_range_t crescendo_ranks[] = {
+    { .rank_cc = TOCCATA_BOURDON16_CC,  .rank_start = 0.1, .rank_end = 0.4 },
+    { .rank_cc = TOCCATA_FLUTE8_CC,     .rank_start = 0.0, .rank_end = 0.0 },
+    { .rank_cc = TOCCATA_MONTRE8_CC,    .rank_start = 0.2, .rank_end = 0.5 },
+    { .rank_cc = TOCCATA_FLUTE4_CC,     .rank_start = 0.3, .rank_end = 0.6 },
+    { .rank_cc = TOCCATA_PRESTANT4_CC,  .rank_start = 0.4, .rank_end = 0.7 },
+    { .rank_cc = TOCCATA_DOUBLETTE2_CC, .rank_start = 0.5, .rank_end = 0.8 },
+    { .rank_cc = TOCCATA_PLEINJEUX_CC,  .rank_start = 0.6, .rank_end = 0.9 },
     RANK_SENTINEL
 };
 
 static const rank_range_t reed_ranks[] = {
-    { .rank_cc = 210, .rank_start = 0.0, .rank_end = 0.7 },
-    { .rank_cc = 211, .rank_start = 0.3, .rank_end = 1.0 },
+    { .rank_cc = TOCCATA_TROMPETTE8_CC, .rank_start = 0.1, .rank_end = 0.9 },
+    RANK_SENTINEL
+};
+
+static const rank_range_t sesquialtera_ranks[] = {
+    { .rank_cc = TOCCATA_SESQUIALTERA_CC, .rank_start = 0.1, .rank_end = 0.9 },
     RANK_SENTINEL
 };
 
@@ -119,8 +119,9 @@ enum {
     LEFT_BUFFER,
     RIGHT_BUFFER,
     FREEWHEEL_PORT,
-    FLUE_PORT,
+    CRESCENDO_PORT,
     REED_PORT,
+    SESQUIALTERA_PORT,
 };
 
 typedef struct
@@ -134,11 +135,13 @@ typedef struct
     const LV2_Atom_Sequence* input_port;
     float *output_buffers[2];
     const float *freewheel_port;
-    const float *flue_port;
+    const float *crescendo_port;
     const float *reed_port;
+    const float *sesquialtera_port;
 
-    float flue_state;
+    float crescendo_state;
     float reed_state;
+    float sesquialtera_state;
 
     // Atom forge
     LV2_Atom_Forge forge; ///< Forge for writing atoms in run thread
@@ -208,11 +211,14 @@ connect_port(LV2_Handle instance,
     case FREEWHEEL_PORT:
         self->freewheel_port = (const float *)data;
         break;
-    case FLUE_PORT:
-        self->flue_port = (const float*)data;
+    case CRESCENDO_PORT:
+        self->crescendo_port = (const float*)data;
         break;
     case REED_PORT:
         self->reed_port = (const float*)data;
+        break;
+    case SESQUIALTERA_PORT:
+        self->sesquialtera_port = (const float*)data;
         break;
     default:
         break;
@@ -241,8 +247,9 @@ instantiate(const LV2_Descriptor* descriptor,
     self->max_block_size = MAX_BLOCK_SIZE;
     self->sample_rate = rate;
     self->activated = false;
-    self->flue_state = 0.0f;
+    self->crescendo_state = 0.0f;
     self->reed_state = 0.0f;
+    self->sesquialtera_state = 0.0f;
 
     // Get the features from the host and populate the structure
     for (const LV2_Feature* const* f = features; *f; f++) {
@@ -436,14 +443,19 @@ run(LV2_Handle instance, uint32_t sample_count)
     if (!self->input_port)
         return;
 
-    if (self->flue_state != *self->flue_port) {
-        self->flue_state = *self->flue_port;
-        send_ranks(self, self->flue_state, flue_ranks);
+    if (self->crescendo_state != *self->crescendo_port) {
+        self->crescendo_state = *self->crescendo_port;
+        send_ranks(self, self->crescendo_state, crescendo_ranks);
     }
 
     if (self->reed_state != *self->reed_port) {
         self->reed_state = *self->reed_port;
         send_ranks(self, self->reed_state, reed_ranks);
+    }
+
+    if (self->sesquialtera_state != *self->sesquialtera_port) {
+        self->sesquialtera_state = *self->sesquialtera_port;
+        send_ranks(self, self->sesquialtera_state, sesquialtera_ranks);
     }
 
     LV2_ATOM_SEQUENCE_FOREACH(self->input_port, ev)
