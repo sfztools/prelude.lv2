@@ -10,10 +10,9 @@
         modgui:thumbnail <modgui/thumbnail-preludelv2.png> ;
         modgui:brand "SFZTools" ;
         modgui:label "prelude" ;
-        modgui:model "boxy" ;
-        modgui:panel "3-knobs" ;
+        modgui:model "boxy-small" ;
+        modgui:panel "1-footswitch" ;
         modgui:color "wood2" ;
-        modgui:knob "silver" ;
         modgui:port [
             lv2:index 0 ;
             lv2:symbol "crescendo" ;
