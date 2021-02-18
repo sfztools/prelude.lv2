@@ -1,0 +1,29 @@
+@prefix modgui: <http://moddevices.com/ns/modgui#> .
+@prefix lv2:    <http://lv2plug.in/ns/lv2core#> .
+
+<https://github.com/sfztools/prelude.lv2>
+    modgui:gui [
+        modgui:resourcesDirectory <modgui> ;
+        modgui:iconTemplate <modgui/icon-preludelv2.html> ;
+        modgui:stylesheet <modgui/stylesheet-preludelv2.css> ;
+        modgui:screenshot <modgui/screenshot-preludelv2.png> ;
+        modgui:thumbnail <modgui/thumbnail-preludelv2.png> ;
+        modgui:brand "SFZTools" ;
+        modgui:label "prelude" ;
+        modgui:model "boxy-small" ;
+        modgui:panel "1-footswitch" ;
+        modgui:color "wood2" ;
+        modgui:port [
+            lv2:index 0 ;
+            lv2:symbol "crescendo" ;
+            lv2:name "Crescendo" ;
+        ] , [
+            lv2:index 1 ;
+            lv2:symbol "reed" ;
+            lv2:name "Reed" ;
+        ] , [
+            lv2:index 2 ;
+            lv2:symbol "sesquialtera" ;
+            lv2:name "Sesquialtera" ;
+        ] ;
+    ] .
